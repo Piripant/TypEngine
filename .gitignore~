@@ -1,7 +1,8 @@
 *.js
 *.js.map
 !pixi.min.js
-
+.gitignore~
+.gitignore.swp
 #Visual studio
 *.csproj
 *.config
