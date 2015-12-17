@@ -1,0 +1,6 @@
+c:\users\davide\documents\visual studio 2015\Projects\TypedEngine\TypedEngine\bin\TypedEngine.dll.config
+c:\users\davide\documents\visual studio 2015\Projects\TypedEngine\TypedEngine\bin\TypedEngine.dll
+c:\users\davide\documents\visual studio 2015\Projects\TypedEngine\TypedEngine\bin\TypedEngine.pdb
+c:\users\davide\documents\visual studio 2015\Projects\TypedEngine\TypedEngine\obj\Debug\TypedEngine.dll
+c:\users\davide\documents\visual studio 2015\Projects\TypedEngine\TypedEngine\obj\Debug\TypedEngine.pdb
+C:\Users\Davide\Documents\Visual Studio 2015\Projects\TypedEngine\TypedEngine\obj\Debug\TypedEngine.csprojResolveAssemblyReference.cache
