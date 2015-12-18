@@ -3,6 +3,8 @@
 !pixi.min.js
 .gitignore~
 .gitignore.swp
+Build/
+*.py~
 
 #Visual studio
 *.csproj
