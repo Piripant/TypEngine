@@ -8,6 +8,6 @@ window.onload = () => {
     scene = new Scene();
     SceneRenderer.init();
     scene.LoadFromString(xhttp.responseText);
-
+    
     var el = document.getElementById('content');
 };

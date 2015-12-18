@@ -25,7 +25,6 @@
     //Remember to put [] around paramaters, usless it will fail, even if only one paramenter is needed: obj.AddComponent(Renderer, [texture])
     public AddComponent(component, pars?): void {
         //Checks if has already this component
-        console.log(typeof component);
         if (typeof component != 'string') {
             if (this.GetComponent<Object>(component) === null) {
                 switch (component) {

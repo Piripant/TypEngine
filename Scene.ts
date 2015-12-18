@@ -34,7 +34,6 @@
                     break;
 
                 default:
-                    console.log(par[0])
                     this.gameObjects[i].AddComponent(par[0], []);
                     break;
 
