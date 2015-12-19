@@ -13,7 +13,7 @@
         //Make references to transform.x and transform.y
 
         var transform: Transform = this.gameObject.GetComponent<Transform>(Transform);
-        this.sprite.position.set(transform.x, transform.y);
+        this.sprite.position.set(transform.x, -transform.y);
         this.sprite.scale.set(transform.scale_x, transform.scale_y);
         this.sprite.rotation = transform.rotation;
     }

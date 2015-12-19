@@ -5,6 +5,7 @@
 .gitignore.swp
 Build/
 *.py~
+UserScript.ts
 
 #Visual studio
 *.csproj
