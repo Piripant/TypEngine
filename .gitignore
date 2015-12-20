@@ -3,7 +3,6 @@
 !pixi.min.js
 .gitignore~
 .gitignore.swp
-build/
 *.py~
 UserScript.ts
 .swp
