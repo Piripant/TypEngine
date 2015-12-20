@@ -2,7 +2,7 @@ import glob
 import os
 
 non_engine_files = ["pixi.js.d.ts"]
-exclude_file = ["UserScript.ts"]
+exclude_file = ["UserScript.ts", "main.ts"]
 
 built_file = ""
 lines_count = 0
