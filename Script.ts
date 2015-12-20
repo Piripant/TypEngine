@@ -1,9 +1,23 @@
-﻿class Script extends Component {
-    public Start(): void {
-        
-    }
+﻿/// <reference path="Component.ts"/>
 
-    public FrameUpdate(): void {
-        alert("not what you wanted");
-    }
+class Script extends Component {
+    public Start(): void { }
+
+    public FrameUpdate(): void { }
+
+    public OnMouseDown = () => { }
+
+    public OnMouseUp = () => { }
+
+    public OnMouseEnter = () => { }
+
+    public OnMouseLeave = () => { }
+
+    public OnMouseOver = () => { }
+
+    public OnMouseOut = () => { }
+
+    public OnMouseMove = () => { }
+
+    public OnMouseWheel = () => { }
 }

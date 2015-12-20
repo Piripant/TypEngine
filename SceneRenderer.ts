@@ -1,5 +1,7 @@
-﻿module SceneRenderer {
-    var SceneRenderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer;
+﻿/// <reference path="pixi.js.d.ts"/>
+
+module SceneRenderer {
+    export var SceneRenderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer;
     export var stage: PIXI.Container;
 
     export function init() {

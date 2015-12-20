@@ -49,6 +49,9 @@
         else {
             eval("this.components.push(new " + component + "());");
             this.components[this.components.length - 1].gameObject = this;
+            if (this.components[this.components.length - 1] instanceof Script) {
+                this.GetComponent<Renderer>(Renderer).bindScriptEvents(this.components[this.components.length - 1]);
+            }
         }
     }
 }

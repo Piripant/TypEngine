@@ -2,7 +2,15 @@
     public gameObjects: GameObject[] = [];
     public DynamicRenders: Renderer[] = [];
 
-    public LoadFromString(file: string) {
+    public LoadToEmptyFromString(file: string): void {
+        for (let i = 0; i < this.gameObjects.length; i++) {
+            this.Destroy(this.gameObjects[i]);
+        }
+
+        this.LoadFromString(file);
+    }
+
+    public LoadFromString(file: string): void {
         // Makes lines list
         var line_props = file.split("\n");
         var unders_props: string[][] = [[]];
@@ -23,7 +31,7 @@
         }
     }
 
-    private createComponent(par: string[], i: number) {
+    private createComponent(par: string[], i: number): void {
         try {
             switch (par[0]) {
                 case "Transform":
@@ -56,5 +64,13 @@
                 return this.gameObjects[i];
             }
         }
+    }
+
+    public Destroy(obj: GameObject): void {
+        for (var i = 0; i < this.gameObjects.length; i++) {
+            if (this.gameObjects[i].name === name) {
+                this.gameObjects.splice(i);
+            }
+        }  
     }
 }

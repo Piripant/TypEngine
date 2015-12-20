@@ -1,4 +1,7 @@
-﻿var scene: Scene;
+﻿/// <reference path="Scene.ts"/>
+/// <reference path="SceneRenderer.ts"/>
+
+var scene: Scene;
 
 window.onload = () => {
     var xhttp = new XMLHttpRequest();
@@ -7,7 +10,7 @@ window.onload = () => {
 
     scene = new Scene();
     SceneRenderer.init();
-    scene.LoadFromString(xhttp.responseText);
+    scene.LoadToEmptyFromString(xhttp.responseText);
     
     var el = document.getElementById('content');
 };
