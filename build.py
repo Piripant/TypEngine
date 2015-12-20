@@ -16,7 +16,7 @@ for file_name in glob.glob("*.ts"):
             lines_count += len(file.split("\n"))
             char_count += len(file)
 
-directory = ".\Build"
+directory = "build"
 if not os.path.exists(directory):
     os.makedirs(directory)
 

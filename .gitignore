@@ -3,9 +3,10 @@
 !pixi.min.js
 .gitignore~
 .gitignore.swp
-Build/
+build/
 *.py~
 UserScript.ts
+.swp
 
 #Visual studio
 *.csproj
