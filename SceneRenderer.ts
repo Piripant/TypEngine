@@ -5,7 +5,7 @@ module SceneRenderer {
     export var stage: PIXI.Container;
 
     export function init() {
-        SceneRenderer = PIXI.autoDetectRenderer(800, 600, { backgroundColor: 0x1099bb });
+        SceneRenderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight, { backgroundColor: 0x1099bb });
         document.body.appendChild(SceneRenderer.view);
         stage = new PIXI.Container();
         Render();
@@ -19,7 +19,9 @@ module SceneRenderer {
 
         for (let i = 0; i < scene.gameObjects.length; i++) {
             let components = scene.gameObjects[i].GetComponents<Script>(Script);
+            //sconsole.log(typeof scene.gameObjects[i].GetComponents);
             for (let j = 0; j < components.length; j++) {
+                //console.log(components[j].gameObject.name);
                 components[j].FrameUpdate();
             }
         }

@@ -1,11 +1,12 @@
 *.js
 *.js.map
+*~
 !pixi.min.js
-.gitignore~
 .gitignore.swp
-*.py~
 UserScript.ts
 .swp
+/Test
+/build
 
 #Visual studio
 *.csproj

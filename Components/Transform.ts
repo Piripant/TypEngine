@@ -24,4 +24,8 @@
         this.y += dy;
     }
 
+    public CloneComponent(): Transform {
+        return new Transform(this.x, this.y, this.rotation, this.scale_x, this.scale_y, this.isStatic);
+    }
+
 }

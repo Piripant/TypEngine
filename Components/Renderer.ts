@@ -1,17 +1,13 @@
-﻿/// <reference path="pixi.js.d.ts"/>
-/// <reference path="Transform.ts"/>
-/// <reference path="Component.ts"/>
+﻿class Renderer extends Component {
+    public sprite;
 
-class Renderer extends Component {
-    public sprite: PIXI.Sprite;
-
-    constructor(textureFile: string) {
+    constructor() {
         super();
-        var texture: PIXI.Texture = PIXI.Texture.fromImage(textureFile);
-        this.sprite = new PIXI.Sprite(texture);
-        SceneRenderer.stage.addChild(this.sprite);
     }
 
+    public AddToRenderScene() {
+        SceneRenderer.stage.addChild(this.sprite);
+    }
 
     public bindScriptEvents(script: Script) {
         this.sprite.interactive = true;
@@ -19,6 +15,7 @@ class Renderer extends Component {
         this.sprite.addListener('mouseup', script.OnMouseUp);
         this.sprite.addListener('mouseenter', script.OnMouseEnter);
         this.sprite.addListener('mouseleave', script.OnMouseLeave);
+
         this.sprite.addListener('mouseover', script.OnMouseOver);
         this.sprite.addListener('mouseout', script.OnMouseOut);
         this.sprite.addListener('mousemove', script.OnMouseMove);

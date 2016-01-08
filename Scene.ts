@@ -1,76 +1,66 @@
-﻿class Scene {
+﻿var scene: Scene;
+class Scene {
     public gameObjects: GameObject[] = [];
     public DynamicRenders: Renderer[] = [];
 
-    public LoadToEmptyFromString(file: string): void {
-        for (let i = 0; i < this.gameObjects.length; i++) {
-            this.Destroy(this.gameObjects[i]);
+    public LoadScene(SceneName: string, toEmpty?: boolean) {
+        if (toEmpty) {
+            this.DestroyAll();
         }
-
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", ResourcesLoader.scenes[SceneName], false);
+        xhttp.send();
+        var file = xhttp.responseText;
         this.LoadFromString(file);
     }
 
-    public LoadFromString(file: string): void {
-        // Makes lines list
+    public LoadFromString(file: string) {
         var line_props = file.split("\n");
-        var unders_props: string[][] = [[]];
-        var comp_props: string[][][] = [[[]]];
-
-        // Makes "_ list" with each "line list"
-        for (var i = 0; i < line_props.length; i++) {
-            this.gameObjects[i] = new GameObject();
-            unders_props[i] = line_props[i].split(" ");
-            this.gameObjects[i].name = unders_props[i][0];
-
-            // Makes ", list" with each "_ list (j = 1 because the 0 component is the name)
-            for (var j = 1; j < unders_props[i].length; j++) {
-                comp_props[i] = [];
-                comp_props[i][j] = unders_props[i][j].split(",");
-                this.createComponent(comp_props[i][j], i);
-            }
+        var unders_props = [[]];
+        var comp_props = [[[]]];
+        for (let i = 0; i < line_props.length; i++) {
+            var obj = ResourcesLoader.CreateGameObjectFromStr(line_props[i]);
+            this.gameObjects[i] = this.AddGameObject(obj);
         }
     }
 
-    private createComponent(par: string[], i: number): void {
-        try {
-            switch (par[0]) {
-                case "Transform":
-                    this.gameObjects[i].AddComponent(Transform, [parseFloat(par[1]), parseFloat(par[2]), parseFloat(par[3]), parseFloat(par[4]), parseFloat(par[5]), par[6] === "true"]);
-                    break;
-                case "Renderer":
-                    this.gameObjects[i].AddComponent(Renderer, [par[1]]);
-                    break;
-
-                default:
-                    this.gameObjects[i].AddComponent(par[0], []);
-                    break;
-
+    public AddGameObject(obj: GameObject): GameObject {
+        var newObj: GameObject = obj.CloneGameObject();
+        this.gameObjects.push(newObj);
+        if (newObj.GetComponent<Transform>(Transform) != null && newObj.GetComponent<Renderer>(Renderer) != null) {
+            newObj.GetComponent<Renderer>(Renderer).AddToRenderScene();
+            if (newObj.GetComponent<Transform>(Transform).isStatic == false) {
+                this.DynamicRenders.push(newObj.GetComponent<Renderer>(Renderer));
             }
         }
-        catch (e) {
-            console.log(e);
-            alert("Error in loading scene file (couldn't find or initializate the component: " + par[0]);
-            
-        }
-    }
 
-    public CreateGameObject(name: string): GameObject {
-        return new GameObject
+        var components = newObj.GetComponents<Script>(Script);
+        for (let i in components) {
+            components[i].OnSceneAdd();
+        }
+
+        return newObj;
     }
 
     public FindGameobject(name: string): GameObject {
-        for (var i = 0; i < this.gameObjects.length; i++) {
+        for (let i = 0; i < this.gameObjects.length; i++) {
             if (this.gameObjects[i].name === name) {
                 return this.gameObjects[i];
             }
         }
     }
 
-    public Destroy(obj: GameObject): void {
-        for (var i = 0; i < this.gameObjects.length; i++) {
+    public Destroy(obj: GameObject) {
+        for (let i = 0; i < this.gameObjects.length; i++) {
             if (this.gameObjects[i].name === name) {
                 this.gameObjects.splice(i);
             }
-        }  
+        }
+    }
+
+    public DestroyAll() {
+        for (let i = 0; i < this.gameObjects.length; i++) {
+            this.Destroy(this.gameObjects[i]);
+        }
     }
 }

@@ -57,6 +57,28 @@
             }
         }
     }
+
+    AddComponentsFromStr(par: string[]): void {
+        try {
+            switch (par[0]) {
+                case "Transform":
+                    this.AddComponent(Transform, [parseFloat(par[1]), parseFloat(par[2]), parseFloat(par[3]), parseFloat(par[4]), parseFloat(par[5]), par[6] === "true"]);
+                    break;
+                case "Renderer":
+                    this.AddComponent(Renderer, [par[1]]);
+                    break;
+
+                default:
+                    this.AddComponent(par[0], []);
+                    break;
+            }
+        }
+
+        catch (e) {
+            //console.log(e);
+            //console.error("Error in loading scene file (couldn't find or initializate the component: " + par[0]);
+        }
+    }
 }
 ﻿/// <reference path="SceneRenderer.ts"/>
 
@@ -104,22 +126,6 @@ module Input {
         }
     }
 }
-﻿/// <reference path="Scene.ts"/>
-/// <reference path="SceneRenderer.ts"/>
-
-var scene: Scene;
-
-window.onload = () => {
-    var xhttp = new XMLHttpRequest();
-    xhttp.open("GET", "https://dl.dropboxusercontent.com/u/81666488/Test1.txt", false);
-    xhttp.send();
-
-    scene = new Scene();
-    SceneRenderer.init();
-    scene.LoadToEmptyFromString(xhttp.responseText);
-    
-    var el = document.getElementById('content');
-};
 ﻿// Type definitions for Pixi.js 3.0.9 dev
 // Project: https://github.com/GoodBoyDigital/pixi.js/
 // Definitions by: clark-stevenson <https://github.com/pixijs/pixi-typescript>
@@ -1887,6 +1893,7 @@ class Renderer extends Component {
         this.sprite.addListener('mouseup', script.OnMouseUp);
         this.sprite.addListener('mouseenter', script.OnMouseEnter);
         this.sprite.addListener('mouseleave', script.OnMouseLeave);
+
         this.sprite.addListener('mouseover', script.OnMouseOver);
         this.sprite.addListener('mouseout', script.OnMouseOut);
         this.sprite.addListener('mousemove', script.OnMouseMove);
@@ -1901,15 +1908,80 @@ class Renderer extends Component {
         this.sprite.rotation = transform.rotation;
     }
 }
-﻿class Scene {
+﻿module ResourcesLoader {
+    export var scenes = {};
+    export var prefabs = {};
+
+    export function LoadFromURL(url: string, callback) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", url, false);
+        xhttp.send();
+        LoadFromString(xhttp.responseText, callback);
+    }
+
+    export function LoadFromString(file: string, callback) {
+        var file_list = file.split("\n");
+        scenes = getDict(file_list[0]);
+        var prefabs_dict = getDict(file_list[1]);
+        prefabs = makePrefabs(prefabs_dict);
+        callback();
+    }
+
+    function getDict(line: string) {
+        var line_list = line.split(" ");
+        var dict: { [id: string]: string } = {};
+        for (var i in line_list) {
+            var temp = line_list[i].split(",");
+            dict[temp[0]] = temp[1];
+            console.log(dict);
+        }
+        return dict;
+    }
+
+    export function CreateGameObjectFromStr(data: string): GameObject {
+        console.log(data);
+        var gameObject = new GameObject();
+        var space_props = data.split(" ");
+        gameObject.name = space_props[0];
+
+        // Makes ", list" with each "_ list (j = 1 because the 0 component is the name)
+        var comp_props = [];
+        for (var j = 1; j < space_props.length; j++) {
+            comp_props[j] = space_props[j].split(",");
+            gameObject.AddComponentsFromStr(comp_props[j]);
+        }
+
+        return gameObject;
+    }
+
+    function makePrefabs(dict) {
+        console.log(dict);
+        console.log(scenes)
+        var xhttp = new XMLHttpRequest();
+        for (var i in dict) {
+            xhttp.open("GET", dict[i], false);
+            xhttp.send();
+            dict[i] = CreateGameObjectFromStr(xhttp.responseText);
+        }
+
+        return dict;
+    }
+}
+﻿/// <reference path="ResourcesLoader.ts"/>
+
+class Scene {
     public gameObjects: GameObject[] = [];
     public DynamicRenders: Renderer[] = [];
 
-    public LoadToEmptyFromString(file: string): void {
-        for (let i = 0; i < this.gameObjects.length; i++) {
-            this.Destroy(this.gameObjects[i]);
+    public LoadScene(SceneName: string, toEmpty?) {
+        if (toEmpty) {
+            this.DestroyAll();
         }
 
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", ResourcesLoader.scenes[SceneName], false);
+        xhttp.send();
+        var file: string = xhttp.responseText;
         this.LoadFromString(file);
     }
 
@@ -1919,47 +1991,22 @@ class Renderer extends Component {
         var unders_props: string[][] = [[]];
         var comp_props: string[][][] = [[[]]];
 
+        // ResourcesLoader.scenes[SceneName] = []
         // Makes "_ list" with each "line list"
         for (var i = 0; i < line_props.length; i++) {
-            this.gameObjects[i] = new GameObject();
-            unders_props[i] = line_props[i].split(" ");
-            this.gameObjects[i].name = unders_props[i][0];
-
-            // Makes ", list" with each "_ list (j = 1 because the 0 component is the name)
-            for (var j = 1; j < unders_props[i].length; j++) {
-                comp_props[i] = [];
-                comp_props[i][j] = unders_props[i][j].split(",");
-                this.createComponent(comp_props[i][j], i);
-            }
-        }
-    }
-
-    private createComponent(par: string[], i: number): void {
-        try {
-            switch (par[0]) {
-                case "Transform":
-                    this.gameObjects[i].AddComponent(Transform, [parseFloat(par[1]), parseFloat(par[2]), parseFloat(par[3]), parseFloat(par[4]), parseFloat(par[5]), par[6] === "true"]);
-                    break;
-                case "Renderer":
-                    this.gameObjects[i].AddComponent(Renderer, [par[1]]);
-                    break;
-
-                default:
-                    this.gameObjects[i].AddComponent(par[0], []);
-                    break;
-
-            }
-        }
-        catch (e) {
-            console.log(e);
-            alert("Error in loading scene file (couldn't find or initializate the component: " + par[0]);
+            this.gameObjects[i] = ResourcesLoader.CreateGameObjectFromStr(line_props[i]);
+            // ResourcesLoader.scenes[SceneName] = this.gameObjects[i]
             
         }
     }
 
     public CreateGameObject(name: string): GameObject {
-        return new GameObject
+        var obj = new GameObject();
+        obj.name = name;
+        this.gameObjects.push(obj);
+        return obj;
     }
+
 
     public FindGameobject(name: string): GameObject {
         for (var i = 0; i < this.gameObjects.length; i++) {
@@ -1976,6 +2023,12 @@ class Renderer extends Component {
             }
         }  
     }
+
+    public DestroyAll(): void {
+        for (let i = 0; i < this.gameObjects.length; i++) {
+            this.Destroy(this.gameObjects[i]);
+        }
+    }
 }
 ﻿/// <reference path="pixi.js.d.ts"/>
 
@@ -1984,7 +2037,7 @@ module SceneRenderer {
     export var stage: PIXI.Container;
 
     export function init() {
-        SceneRenderer = PIXI.autoDetectRenderer(800, 600, { backgroundColor: 0x1099bb });
+        SceneRenderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight, { backgroundColor: 0x1099bb });
         document.body.appendChild(SceneRenderer.view);
         stage = new PIXI.Container();
         Render();
