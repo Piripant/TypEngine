@@ -1,6 +1,7 @@
 ﻿/// <reference path="Component.ts"/>
 
-class Script extends Component {
+class Script extends Component {    
+    
     public OnSceneAdd(): void { }
 
     public FrameUpdate(): void { }
@@ -20,7 +21,7 @@ class Script extends Component {
     public OnMouseMove = () => { }
 
     public OnMouseWheel = () => { }
-
+    
     public CloneComponent() {
         return new (<any>this.constructor)();
     }

@@ -4,17 +4,24 @@
     public components = [];
     public name: string = "";
     public instanceID: number;
-
+    
     constructor() {
         this.instanceID = GameObject.lastID;
         GameObject.lastID++;
-        console.log(this.instanceID);
     }
-
+    
+    public Destroy () {
+        for (let i in this.components) {
+            this.components[i].OnDestroy();
+        }
+        
+        delete this;
+    }
+    
     public CloneGameObject(): GameObject {
         var cloneObj: GameObject = new GameObject();
         cloneObj.name = this.name;
-
+        
         for (let i in this.components) {
             cloneObj.components[i] = this.components[i].CloneComponent();
             cloneObj.components[i].gameObject = cloneObj;
@@ -51,7 +58,7 @@
     //Remember to put [] around paramaters, usless it will fail, even if only one paramenter is needed: obj.AddComponent(SpriteRenderer, [texture])
     public AddComponent(component, pars?): void {
         //Checks if has already this component
-        if (typeof component != 'string') {
+        if (typeof component !== 'string') {
             if (this.GetComponent<Object>(component) === null) {
                 // When evaluating components do not do any scene related stuff
                 switch (component) {
@@ -71,10 +78,15 @@
         }
 
         else {
-            eval("this.components.push(new " + component + "());");
-            this.components[this.components.length - 1].gameObject = this;
-            if (this.components[this.components.length - 1] instanceof Script) {
-                this.GetComponent<Renderer>(Renderer).bindScriptEvents(this.components[this.components.length - 1]);
+            console.log(pars);
+            
+            var comp = new (<any>window[component])(pars);
+            console.log(comp)
+            console.log(new UserScript);
+            this.components.push(comp);
+            comp.gameObject = this;
+            if (comp instanceof Script && this.GetComponent<Renderer>(Renderer) != null) {
+                this.GetComponent<Renderer>(Renderer).bindScriptEvents(comp);
             }
         }
     }
@@ -90,14 +102,28 @@
                     break;
 
                 default:
-                    this.AddComponent(par[0], []);
+                    // There may be a \r char sometimes
+                    console.log(par);
+                    this.AddComponent(par[0].split("\r")[0], par.slice(1, par.length));
                     break;
             }
         }
 
         catch (e) {
-            //console.log(e);
-            //console.error("Error in loading scene file (couldn't find or initializate the component: " + par[0]);
+            console.log(e);
+            console.error("Error in loading scene file (couldn't find or initializate the component: " + par[0]);
+        }
+    }
+    
+    public DisableAll() {
+        for (let i in this.components) {
+            this.components[i].enabled = false;
+        }
+    }
+    
+    public EnableAll() {
+        for (let i in this.components) {
+            this.components[i].enabled = true;
         }
     }
 }

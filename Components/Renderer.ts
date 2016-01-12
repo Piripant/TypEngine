@@ -3,8 +3,17 @@
 
     constructor() {
         super();
+        // this.AddToRenderScene();
     }
-
+    
+    public OnEnable () {
+        SceneRenderer.stage.addChild(this.sprite);
+    }
+    
+    public OnDisable () {
+        SceneRenderer.stage.removeChild(this.sprite);
+    }
+    
     public AddToRenderScene() {
         SceneRenderer.stage.addChild(this.sprite);
     }

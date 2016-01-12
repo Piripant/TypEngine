@@ -30,6 +30,7 @@ UserScript.ts
 *.lib
 *.sbr
 *.sdf
+.vscode/
 ipch/
 obj/
 [Bb]in

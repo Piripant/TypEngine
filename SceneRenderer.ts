@@ -19,10 +19,10 @@ module SceneRenderer {
 
         for (let i = 0; i < scene.gameObjects.length; i++) {
             let components = scene.gameObjects[i].GetComponents<Script>(Script);
-            //sconsole.log(typeof scene.gameObjects[i].GetComponents);
             for (let j = 0; j < components.length; j++) {
-                //console.log(components[j].gameObject.name);
-                components[j].FrameUpdate();
+                if (components[j].enabled) {
+                    components[j].FrameUpdate();
+                }
             }
         }
 

@@ -1,6 +1,29 @@
 ﻿/// <reference path="Scene.ts"/>
 /// <reference path="./Components/Script.ts"/>
 
+
+/*
+How to write GameObjects:
+A GameObject is destribed like this:
+    name Component1,parameter1 Component2,parameter1
+    
+    Example:
+    House Transform,0,0,0,1,1,false SpriteRenderer,house.png
+    
+    Notes:
+    The parameters must be written in the same order of the class contructor parameters
+    Script components must be written last, after no Script component there should be an internal component
+    
+How to write scene files:
+Every line rapresents a GameObject like this:
+    objectname1 Component1,parameter1,parameter2 Component2,parameter1
+    objectname2 Component1,parameter1 Component2,parameter1,parameter2
+    
+    Example:
+    name1 Transform,0,0,0,1,1,false SpriteRenderer,house.png UserScript
+    name2 Transform,400,-250,0,1,1,false SpriteRenderer,bunny.png UserScript
+    name4 Transform,10,-20,0,1,1,false
+*/
 module ResourcesLoader {
     export var scenes = {};
     export var prefabs = {};
@@ -72,7 +95,8 @@ module ResourcesLoader {
         for (var i in dict) {
             xhttp.open("GET", dict[i], false);
             xhttp.send();
-            dict[i] = CreateGameObjectFromStr(xhttp.responseText);
+            // The split is to remove newlines, just in case
+            dict[i] = CreateGameObjectFromStr(xhttp.responseText.split("\n")[0]);
         }
 
         return dict;

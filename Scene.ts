@@ -16,8 +16,7 @@ class Scene {
 
     public LoadFromString(file: string) {
         var line_props = file.split("\n");
-        var unders_props = [[]];
-        var comp_props = [[[]]];
+
         for (let i = 0; i < line_props.length; i++) {
             var obj = ResourcesLoader.CreateGameObjectFromStr(line_props[i]);
             this.gameObjects[i] = this.AddGameObject(obj);
@@ -42,9 +41,17 @@ class Scene {
         return newObj;
     }
 
-    public FindGameobject(name: string): GameObject {
+    public FindGameobjectByName(name: string): GameObject {
         for (let i = 0; i < this.gameObjects.length; i++) {
             if (this.gameObjects[i].name === name) {
+                return this.gameObjects[i];
+            }
+        }
+    }
+    
+    public FindGameobjectByID(id: number): GameObject {
+        for (let i = 0; i < this.gameObjects.length; i++) {
+            if (this.gameObjects[i].instanceID === id) {
                 return this.gameObjects[i];
             }
         }
@@ -52,15 +59,13 @@ class Scene {
 
     public Destroy(obj: GameObject) {
         for (let i = 0; i < this.gameObjects.length; i++) {
-            if (this.gameObjects[i].name === name) {
-                this.gameObjects.splice(i);
-            }
+            this.FindGameobjectByID(obj.instanceID).Destroy();
         }
     }
 
     public DestroyAll() {
         for (let i = 0; i < this.gameObjects.length; i++) {
-            this.Destroy(this.gameObjects[i]);
+            this.gameObjects[i].Destroy();
         }
     }
 }
