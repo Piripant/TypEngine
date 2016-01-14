@@ -1,21 +1,21 @@
 ﻿/// <reference path="pixi.js.d.ts"/>
 
 module SceneRenderer {
-    export var SceneRenderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer;
+    export var MainRenderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer;
     export var stage: PIXI.Container;
-
+    
     export function init() {
-        SceneRenderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight, { backgroundColor: 0x1099bb });
-        document.body.appendChild(SceneRenderer.view);
+        MainRenderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight, { backgroundColor: 0x1099bb });
+        document.body.appendChild(MainRenderer.view);
         stage = new PIXI.Container();
+        window.onresize = resize;
         Render();
     }
 
-    function Render (): void {
-
+    function Render (): void {    
         requestAnimationFrame(Render);
 
-        SceneRenderer.render(stage);
+        MainRenderer.render(stage);
 
         for (let i = 0; i < scene.gameObjects.length; i++) {
             let components = scene.gameObjects[i].GetComponents<Script>(Script);
@@ -30,6 +30,10 @@ module SceneRenderer {
             scene.DynamicRenders[i].updateTransform();
         }
         
+    }
+    
+    var resize = () => {
+        MainRenderer.resize(window.innerWidth, window.innerHeight);
     }
 
 }
